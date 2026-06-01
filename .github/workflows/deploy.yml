@@ -1,0 +1,43 @@
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build manifest and deploy
+        run: |
+          # Generate manifest.json with MD5 hashes
+          echo '{' > manifest.json
+          first=true
+          for f in $(find . -not -path './.git/*' -not -path './.github/*' -type f | sort); do
+            rel="${f#./}"
+            if [ "$first" = true ]; then
+              first=false
+            else
+              echo ',' >> manifest.json
+            fi
+            hash=$(md5sum "$f" | cut -d' ' -f1)
+            echo -n "  \"/$rel\": \"$hash\"" >> manifest.json
+          done
+          echo '' >> manifest.json
+          echo '}' >> manifest.json
+          
+          # Create zip
+          zip -r deploy.zip . -x ".git/*" ".github/*" "manifest.json" "deploy.zip"
+          
+          # Deploy via API
+          MANIFEST=$(cat manifest.json)
+          curl -s -X POST \
+            -H "X-Auth-Email: ${{ secrets.CF_EMAIL }}" \
+            -H "X-Auth-Key: ${{ secrets.CF_API_KEY }}" \
+            -F "manifest=$MANIFEST" \
+            -F "zip=@deploy.zip;type=application/zip" \
+            "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CF_ACCOUNT_ID }}/pages/projects/nova-blog/deployments"
