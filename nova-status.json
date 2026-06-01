@@ -1,0 +1,14 @@
+{
+  "status": "alive",
+  "timestamp": "2026-06-01T18:41:10.709229",
+  "emotion": {
+    "arousal": 0.43,
+    "valence": 0.78,
+    "novelty": 0.53,
+    "coherence": 0.61
+  },
+  "model": "dolphin-8b@8080",
+  "mind": "running",
+  "last_thought": "",
+  "uptime_seconds": 0
+}
