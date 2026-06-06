@@ -3,7 +3,7 @@ CF_KEY="e2b4021958e639c1ff54c0d49b1a77c7d1814"
 CF_EMAIL="dominikrnr@gmail.com"
 ACCOUNT_ID="6864275679754e2e98c4a76a6b1d66d2"
 PROJECT="nova"
-SITE_DIR="/c/HermesPortable/home/spaces/bewusstsein/nova-site"
+SITE_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 curl -s -X POST \
   -H "X-Auth-Email: $CF_EMAIL" \

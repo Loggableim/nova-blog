@@ -1,6 +1,8 @@
 import zipfile, os, json
 
-nova_site = r"C:\HermesPortable\home\spaces\bewusstsein\nova-site"
+from pathlib import Path
+
+nova_site = str(Path(__file__).resolve().parent)
 os.chdir(nova_site)
 
 # Find all files to upload
